@@ -75,6 +75,33 @@ class CentralDogma(str):
         if Stop in aminoAcid:
             aminoAcid = aminoAcid[:aminoAcid.index('Stop')+1]       # index는 오류 존재, find는 오류 X -> 조건문 사용했으므로 이 경우에는 오류 X
         '''
+    def moving_after_translate(self):
+        aminoAcid_list = self.terminate()
+        #N말단에 있는 신호 서열 인식
+        if ['Pro', 'Pro', 'Lys', 'Lys', 'Lys', 'Arg', 'Lys', 'Val'] in aminoAcid_list:
+            return 'nucleus'
+        elif len(aminoAcid_list) >= 39:
+            if aminoAcid_list[0:39] ==  ['Met', 'Val', 'Ala', 'Met', 'Ala', 'Met', 'Ala', 'Ser', 'Leu', 'Gln', 'Ser', 'Ser', 'Met', 'Ser', 'Ser', 'Leu', 'Ser', 'Leu', 'Ser', 'Ser', 'Asn', 'Ser', 'Phe', 'Leu', 'Gly', 'Gln', 'Pro', 'Leu', 'Ser', 'Pro', 'Ile', 'Thr', 'Leu', 'Ser', 'Pro', 'Phe', 'Leu', 'Gln', 'Gly']:
+                return 'plastid'
+        elif len(aminoAcid_list) >= 26:
+            if aminoAcid_list[0:26] == ['Met', 'Val', 'Leu', 'Ser', 'Leu', 'Arg', 'Gln', 'Ser', 'Ile', 'Arg', 'Phe', 'Phe', 'Lys', 'Pro', 'Ala', 'Thr', 'Arg', 'Thr', 'Leu', 'Cys', 'Ser', 'Ser', 'Arg', 'Tyr', 'Leu', 'Leu']:
+                return 'mitochondria'
+        elif len(aminoAcid_list) >= 29:
+            if aminoAcid_list[0:29] == ['Met', 'Met', 'Ser', 'Phe', 'Val', 'Ser', 'Leu', 'Leu', 'Leu', 'Val', 'Gly', 'Ile', 'Leu', 'Phe', 'Trp', 'Ala', 'thr', 'Glu', 'Ala', 'Glu', 'Gln', 'Leu', 'Thr', 'Lys', 'Cys', 'Glu', 'Val', 'Phe', 'Gln']:
+                return 'ER'
+        else:
+            return 'cytoplasm'
+    def check_protein_location(self):
+      if dna_temp.moving_after_translate() == 'ER':
+        Protein_Glycosylation = input("단백질의 당화를 하시겠습니까? (Yes or No) : ")
+        if Protein_Glycosylation == "Yes" :
+          print("단백질이 골지체로 이동 중입니다.")
+          Protein_Phosphorylation = input("단백질의 인산화를 하시겠습니까? (Yes or No) : ")
+          if Protein_Phosphorylation == "Yes" :
+            print("단백질이 리소좀으로 이동 중입니다.")
+          else:
+            print("단백질이 외부로 분비 되었습니다.")
+    
     
 
 
@@ -88,3 +115,6 @@ mRNA = dna_temp.translate()
 print("mRNA         : ", "5'-", mRNA, "-3'")
 print('initated     :', dna_temp.initiate(dna_temp.translate()))
 print(dna_temp.terminate())
+print('protein is moving to %s' %dna_temp.moving_after_translate())
+dna_temp.check_protein_location()
+    
